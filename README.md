@@ -18,7 +18,7 @@ The true nature of scientific discovery and research lies in the acceptance that
 - Past data can change. As more information is brought to light, results may be updated to accommodate.
 - This data is specific to the Philadelphia, Pennsylvania region only. It cannot be extrapolated to other areas of the country or the globe.
 
-<span style="color: #008cba;">**Additional Resources **</span>
+<span style="color: #008cba;">**Additional Resources**</span>
 
 - **[Centers for Disease Control and Prevention](https://www.cdc.gov/coronavirus/2019-ncov/index.html)**
 - **[World Health Organization](https://www.who.int/emergencies/diseases/novel-coronavirus-2019)**
