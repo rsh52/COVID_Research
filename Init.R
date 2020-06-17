@@ -26,16 +26,23 @@ COVID.Outcome$Status <- paste0(COVID.Outcome$TestResult, " - ", COVID.Outcome$Ou
 # COVID Date Data --------------------------------------------------------------
 # Data Cleaning
 COVID.Date <- COVID.Date[,3:6]
-colnames(COVID.Date) <- c("ResultDate", "TestResult", "Count", "Timestamp")
-COVID.Date$TestResult[COVID.Date$TestResult == "positive"] <- "Positive"
-COVID.Date$TestResult[COVID.Date$TestResult == "negative"] <- "Negative"
+colnames(COVID.Date) <- c("ResultDate", "Outcome", "Count", "Timestamp")
+COVID.Date$Outcome[COVID.Date$Outcome == "positive"] <- "Positive"
+COVID.Date$Outcome[COVID.Date$Outcome == "negative"] <- "Negative"
+
+colnames(COVID.DeathDate) <- c("ResultDate", "Outcome", "Count", "Timestamp")
+COVID.DeathDate$Outcome[COVID.DeathDate$Outcome == "DIED"] <- "Died"
+
+COVID.DateC <- rbind(COVID.Date, COVID.DeathDate)
 
 # COVID Age --------------------------------------------------------------------
 COVID.Age <- COVID.Age[,3:5]
 colnames(COVID.Age) <- c("Age", "Count", "TimeStamp")
 COVID.Age$Gender <- "All"
+COVID.Age$Outcome <- "Positive"
 
 colnames(COVID.DeathAge) <- c("Gender", "Age", "Count", "TimeStamp")
+COVID.DeathAge$Outcome <- "Died"
 
 COVID.AgeC <- rbind(COVID.Age, COVID.DeathAge)
 

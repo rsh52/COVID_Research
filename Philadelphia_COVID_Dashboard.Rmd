@@ -16,6 +16,7 @@ library(scales)
 library(highcharter)
 library(leaflet)
 library(tigris)
+library(kableExtra)
 
 source("Init.R")
 ```
@@ -23,20 +24,76 @@ source("Init.R")
 Dashboard
 =========================================
 
-Column {data-width=650}
+Column {data-width=650}{.tabset .tabset-fade}
 -----------------------------------------------------------------------
 
-### COVID-19 Positive Cases by ZIP
+### **COVID-19 Positive Cases by ZIP (All-Time)**
 
 ```{r}
-# cache zip boundaries that are download via tigris package
+# Cache Zip Code Boundaries via `tigris`
 options(tigris_use_cache = TRUE)
 
 char_zips <- zctas(cb = TRUE, starts_with = "191")
 
 df <- COVID.ZIP %>% 
-  filter(covid_status == "POS") %>% 
-  # filter(zip_code %in% char_zips$GEOID10) %>% 
+  filter(covid_status == "POS") %>%
+  select(zip_code, count)
+
+df$count <- as.integer(df$count)
+df$zip_code <- as.numeric(df$zip_code)
+
+join.df <- geo_join(char_zips, 
+                    df, 
+                    by_sp = "GEOID10", 
+                    by_df = "zip_code",
+                    how = "left")
+
+pal <- colorNumeric(
+  palette = "Blues",
+  domain = join.df@data$count, na.color = "#808080")
+
+labels <- 
+  paste0(
+    "Zip Code: ",
+    join.df@data$GEOID10, "<br/>",
+    "COVID Positive Count: ",
+    join.df@data$count) %>%
+  lapply(htmltools::HTML)
+
+
+join.df %>% 
+  leaflet %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addPolygons(fillColor = ~pal(count), 
+              weight = 2,
+              opacity = 1,
+              color = "white",
+              dashArray = "3",
+              fillOpacity = 0.7,
+              highlight = highlightOptions(weight = 2,
+                                           color = "#666",
+                                           dashArray = "",
+                                           fillOpacity = 0.7,
+                                           bringToFront = TRUE),
+              label = labels) %>%
+  addLegend(pal = pal,
+            values = ~count, 
+            opacity = 0.7, 
+            title = htmltools::HTML("COVID-19 Positive Count <br> 
+                                    by Zip Code"),
+            position = "bottomright")
+
+```
+
+### **COVID-19 Deaths by ZIP (All-Time)**
+
+```{r}
+# Cache Zip Code Boundaries via `tigris`
+options(tigris_use_cache = TRUE)
+
+char_zips <- zctas(cb = TRUE, starts_with = "191")
+
+df <- COVID.DeathZip %>% 
   select(zip_code, count)
 
 df$count <- as.integer(df$count)
@@ -56,16 +113,14 @@ labels <-
   paste0(
     "Zip Code: ",
     join.df@data$GEOID10, "<br/>",
-    "COVID Count: ",
+    "COVID Death Count: ",
     join.df@data$count) %>%
   lapply(htmltools::HTML)
 
 
 join.df %>% 
   leaflet %>% 
-  # add base map
   addProviderTiles(providers$CartoDB.Positron) %>% 
-  # add zip codes
   addPolygons(fillColor = ~pal(count), 
               weight = 2,
               opacity = 1,
@@ -78,32 +133,13 @@ join.df %>%
                                            fillOpacity = 0.7,
                                            bringToFront = TRUE),
               label = labels) %>%
-  # add legend
   addLegend(pal = pal,
             values = ~count, 
             opacity = 0.7, 
-            title = htmltools::HTML("COVID-19 Count <br> 
+            title = htmltools::HTML("COVID-19 Death Count <br> 
                                     by Zip Code"),
             position = "bottomright")
 
-```
-
-### 
-
-```{r COVID Date}
-COVID.Date %>%
-  arrange(ResultDate) %>% 
-  hchart("area", hcaes(x = ResultDate, y = Count, group = TestResult)) %>% 
-  hc_add_theme(hc_theme_db()) %>% 
-  # hc_colors(colors = c("#89DC6B", "#F1431C")) %>% 
-  hc_chart(zoomType = "xy") %>% 
-  hc_title(text = paste0("COVID-19 Results Over Time as of: ", COVID.Outcome$Timestamp[1]), align = "left") %>% 
-  hc_exporting(enabled = TRUE, filename = "COVID19_Incidence_Plot") %>% 
-  hc_yAxis(title = list(text = "Count (n)", style = list(fontSize = "16px", color = "white")),
-           labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
-  hc_xAxis(title = list(text = "Date (Test Results Per Day)", style = list(fontSize = "16px", color = "white")),
-           labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
-  hc_credits(enabled = TRUE, text = "Source: https://www.opendataphilly.org/dataset/covid-cases")
 ```
 
 Column {data-width=350}
@@ -127,19 +163,61 @@ valueBox(COVID.Outcome$Count[3], icon = "fa-bug", color = "#E9C509")
 valueBox(value = paste0(COVID.Outcome$Count[1], " (", percent(COVID.Outcome$Count[1]/COVID.Outcome$Count[3], accuracy = 0.01),")"), icon = "fa-skull", color = "#DC4015")
 ```
 
-### 
+### Data Query Time Stamp
 
-```{r COVID Age}
-COVID.Age %>% 
-  arrange(Age) %>% 
-  hchart("column", hcaes(x = Age, y = Count, color = Age)) %>% 
+```{r COVID Time Stamp}
+valueBox(value = COVID.Outcome$Timestamp[1], icon = "fa-clock", color = "#3fb5e3")
+```
+
+### **Demographic Breakdown**
+
+```{r COVID Demog}
+COVID.AgeC %>% 
+  # arrange(Age, Gender) %>% 
+  select(Age, Gender, Outcome, Count) %>% 
+  kable() %>% 
+  kable_styling(c("striped", "condensed", "hover")) %>% 
+  column_spec(3, bold = T) %>% 
+  row_spec(1:5, color = "black", background = "#E9C509") %>% 
+  row_spec(6:12, color = "white", background = "#DC4015")
+
+```
+
+Test Result Reporting {.tabset .tabset-fade}
+=========================================
+
+### **Test Results by Date**
+
+```{r COVID Date}
+COVID.Date %>%
+  arrange(ResultDate) %>% 
+  hchart("area", hcaes(x = ResultDate, y = Count, group = Outcome)) %>% 
   hc_add_theme(hc_theme_db()) %>% 
-  # hc_colors(colors = c("#008FFF", "#DAF7A6", "#FFC300", "DC4015", "#C70039")) %>% 
-  hc_title(text = paste0("COVID-19 Age Breakdown as of: ", COVID.Outcome$Timestamp[1]), align = "left") %>% 
-  hc_exporting(enabled = TRUE, filename = "COVID19_Age_Plot") %>% 
+  hc_colors(colors = c("#89DC6B", "#F1431C")) %>%
+  hc_chart(zoomType = "xy") %>% 
+  hc_title(text = "COVID-19 Test Results by Date") %>% 
+  hc_exporting(enabled = TRUE, filename = "COVID19_Incidence_Plot") %>% 
   hc_yAxis(title = list(text = "Count (n)", style = list(fontSize = "16px", color = "white")),
            labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
-  hc_xAxis(title = list(text = "Age Category", style = list(fontSize = "16px", color = "white")),
+  hc_xAxis(title = list(text = "Date (Test Results Per Day)", style = list(fontSize = "16px", color = "white")),
+           labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
+  hc_credits(enabled = TRUE, text = "Source: https://www.opendataphilly.org/dataset/covid-cases")
+```
+
+### **Death Toll by Date**
+
+```{r COVID Date Death}
+COVID.DeathDate %>%
+  arrange(ResultDate) %>% 
+  hchart("area", hcaes(x = ResultDate, y = Count, group = Outcome)) %>% 
+  hc_add_theme(hc_theme_db()) %>% 
+  hc_colors(colors = c("#F1431C")) %>%
+  hc_chart(zoomType = "xy") %>% 
+  hc_title(text = "COVID-19 Death Counts by Date") %>% 
+  hc_exporting(enabled = TRUE, filename = "COVID19_Incidence_Plot") %>% 
+  hc_yAxis(title = list(text = "Count (n)", style = list(fontSize = "16px", color = "white")),
+           labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
+  hc_xAxis(title = list(text = "Date (Test Results Per Day)", style = list(fontSize = "16px", color = "white")),
            labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
   hc_credits(enabled = TRUE, text = "Source: https://www.opendataphilly.org/dataset/covid-cases")
 ```
