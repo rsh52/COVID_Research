@@ -5,7 +5,7 @@ COVID.Outcome <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covi
 COVID.Date <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_date&filename=covid_cases_by_date&format=csv&skipfields=cartodb_id")
 COVID.ZIP <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_zip&filename=covid_cases_by_zip&format=csv&skipfields=cartodb_id")
 COVID.Age <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_age&filename=covid_cases_by_age&format=csv&skipfields=cartodb_id")
-COVID.Sex <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_sex&filename=covid_cases_by_sex&format=csv&skipfields=cartodb_id")
+COVID.Gender <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_sex&filename=covid_cases_by_Gender&format=csv&skipfields=cartodb_id")
 
 ## COVID Deaths Datasets
 COVID.DeathDate <- read_csv("https://phl.carto.com/api/v2/sql?filename=covid_deaths_by_date&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_deaths_by_date")
@@ -46,3 +46,18 @@ COVID.DeathAge$Outcome <- "Died"
 
 COVID.AgeC <- rbind(COVID.Age, COVID.DeathAge)
 
+# COVID Gender Breakdown ----------------------------------------------------------
+COVID.Gender <- COVID.Gender[,3:5]
+colnames(COVID.Gender) <- c("Gender", "Count", "TimeStamp")
+COVID.Gender <- COVID.Gender %>% 
+  # filter(Gender != "UNKNOWN") %>% # Removed only for simplicity
+  select(Gender, Count) %>% 
+  mutate(Outcome = "Positive")
+
+COVID.GenderDeath <- COVID.DeathAge %>% 
+  group_by(Gender) %>% 
+  summarise(Count = sum(Count)) %>% 
+  mutate(Outcome = "Died")
+
+COVID.Gender <- rbind(COVID.Gender, COVID.GenderDeath)
+COVID.Gender <- COVID.Gender[,c(1,3,2)] # Reorder to display properly
