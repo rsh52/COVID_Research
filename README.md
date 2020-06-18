@@ -2,7 +2,9 @@
 
 ## <span style="color: #008cba; font-size:18px;">**Introduction**</span>
 
-Welcome to the **Philadelphia COVID-19 Dashboard**. This dashboard was built with the intention of displaying day-by-day metrics of COVID-19 prevalence and demographic impact in the city of Philadelphia, Pennsylvania. It is made using the [R statistical programming language](https://www.r-project.org/about.html) with functionality provided by the `flexdashboard` package and other libraries.
+Welcome to the **Philadelphia COVID-19 Dashboard**. This dashboard was built with the intention of displaying day-by-day metrics of COVID-19 prevalence and demographic impact in the city of Philadelphia, Pennsylvania. It is made using the [R statistical programming language](https://www.r-project.org/about.html) with functionality provided by the `flexdashboard` package, `highcharter` graphing library, among others.
+
+This dashboard and the code associated are made freely available on the author’s [GitHub repository](https://github.com/rsh52/COVID_Research).
 
 ## <span style="color: #008cba; font-size:18px ">**Background**</span>
 
