@@ -1,16 +1,18 @@
-<span style="color: #008cba; font-size:18px;">**Introduction**</span>
+# Philadelphia COVID-19 Dashboard
+
+## <span style="color: #008cba; font-size:18px;">**Introduction**</span>
 
 Welcome to the **Philadelphia COVID-19 Dashboard**. This dashboard was built with the intention of displaying day-by-day metrics of COVID-19 prevalence and demographic impact in the city of Philadelphia, Pennsylvania. It is made using the [R statistical programming language](https://www.r-project.org/about.html) with functionality provided by the `flexdashboard` package and other libraries.
 
-<span style="color: #008cba; font-size:18px ">**Background**</span>
+## <span style="color: #008cba; font-size:18px ">**Background**</span>
 
 As described by the CDC, COVID-19 is the resultant respiratory illness of the Sars-Cov-2 virus. The virus was first seen on a global stage in December, 2019 though some evidence suggests the true start date with patient zero was sometime in November. Named after the Latin word for “crown” due to the resemblance of the virus’ surface, coronaviruses come in varying forms including SARS and MERS from outbreaks in the past. The novel Sars-Cov-2 virus originated in Wuhan, China and made landfall in the United States on January 20th, 2020. On March 11th, the WHO declared COVID-19 a pandemic as the virus touched down in nearly every country around the globe to varying reporting accuracy. 
 
-<span style="color: #008cba; font-size:18px ">**Data Source**</span>
+## <span style="color: #008cba; font-size:18px ">**Data Source**</span>
 
 This dashboard takes data from [Open Data Philly](https://www.opendataphilly.org/), a free to use and publicly accessible data source supplying datasets and API integrations for over 300 datasets related to the Philadelphia region. The COVID-19 specific data fed to this dashboard is updated daily and includes de-identified counts of test results, outcomes, location, and age demographics in the region. Data is supplied from two main datasets: [COVID Cases](https://www.opendataphilly.org/dataset/covid-cases) and [COVID Deaths](https://www.opendataphilly.org/dataset/covid-deaths).
 
-<span style="color: #008cba; font-size:18px ">**Limitations**</span>
+## <span style="color: #008cba; font-size:18px ">**Limitations**</span>
 
 The true nature of scientific discovery and research lies in the acceptance that tomorrow will only shed more light on the knowledge gleaned today. As events unfold and understanding grows, expect details and data related to COVID-19 to remain in flux for a considerable time. That being said, this dashboard is tied to the same limitations as the rest of the scientific community and a few more:
 
@@ -20,7 +22,7 @@ The true nature of scientific discovery and research lies in the acceptance that
 - Data presented is primarily based on total, all-time counts and is not representative of time series displays with the exception of the two line graphs depicting counts over time as a daily total under the **Test Result Reporting** tab
 - Rates of mortality are crude estimates based on the presented all-time data
 
-<span style="color: #e67904; font-size:16px ">**Additional Resources **</span>
+### <span style="color: #e67904; font-size:16px ">**Additional Resources **</span>
 
 - **[Centers for Disease Control and Prevention](https://www.cdc.gov/coronavirus/2019-ncov/index.html)**
 - **[World Health Organization](https://www.who.int/emergencies/diseases/novel-coronavirus-2019)**
