@@ -22,7 +22,7 @@ The true nature of scientific discovery and research lies in the acceptance that
 - Data presented is primarily based on total, all-time counts and is not representative of time series displays with the exception of the two line graphs depicting counts over time as a daily total under the **Test Result Reporting** tab
 - Rates of mortality are crude estimates based on the presented all-time data
 
-### <span style="color: #e67904; font-size:16px ">**Additional Resources **</span>
+## <span style="color: #e67904; font-size:16px ">**Additional Resources**</span>
 
 - **[Centers for Disease Control and Prevention](https://www.cdc.gov/coronavirus/2019-ncov/index.html)**
 - **[World Health Organization](https://www.who.int/emergencies/diseases/novel-coronavirus-2019)**
