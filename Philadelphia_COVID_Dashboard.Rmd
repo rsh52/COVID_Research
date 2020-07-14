@@ -303,3 +303,4 @@ The true nature of scientific discovery and research lies in the acceptance that
 - **[Johns Hopkins COVID-19 Dashboard](https://coronavirus.jhu.edu/map.html)**
 - **[National Public Radio COVID-19 Tracker](https://www.npr.org/sections/health-shots/2020/03/16/816707182/map-tracking-the-spread-of-the-coronavirus-in-the-u-s)**
 - **[Children’s Hospital of Philadelphia COVID Tracker and Predictor](https://policylab.chop.edu/covid-lab-mapping-covid-19-your-community)**
+- **[Our world in Data Epidemiologic Tracking](https://ourworldindata.org/epi-curve-covid-19)*
