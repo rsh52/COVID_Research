@@ -46,7 +46,7 @@ COVID.DeathAge$Outcome <- "Died"
 
 COVID.AgeC <- rbind(COVID.Age, COVID.DeathAge)
 
-# COVID Gender Breakdown ----------------------------------------------------------
+# COVID Gender Breakdown -------------------------------------------------------
 COVID.Gender <- COVID.Gender[,3:5]
 colnames(COVID.Gender) <- c("Gender", "Count", "TimeStamp")
 COVID.Gender <- COVID.Gender %>% 
@@ -61,3 +61,18 @@ COVID.GenderDeath <- COVID.DeathAge %>%
 
 COVID.Gender <- rbind(COVID.Gender, COVID.GenderDeath)
 COVID.Gender <- COVID.Gender[,c(1,3,2)] # Reorder to display properly
+
+# COVID Rolling Avg ------------------------------------------------------------
+alldates <- data.frame(ResultDate = seq(min(COVID.DateC$ResultDate, na.rm = T), max(COVID.DateC$ResultDate, na.rm = T), 1))
+
+roll.wk <- COVID.DateC %>% 
+  drop_na() %>% 
+  full_join(alldates, by = "ResultDate") %>% 
+  # replace_na(0) %>% 
+  arrange(ResultDate) %>% 
+  group_by(Outcome) %>% 
+  mutate(
+    RollWindow = round(zoo::rollapplyr(Count, width = 7, FUN = mean, fill = NA),1)
+  )
+
+

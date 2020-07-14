@@ -17,7 +17,7 @@ library(scales)
 library(highcharter) # Graphing library of choice
 library(leaflet) # Mapping library of choice
 library(tigris) # Support for Zip Code cacheing 
-library(kableExtra) # Graphic table librarr
+library(kableExtra) # Graphic table library
 
 source("Init.R") # Most used dataframes come from this initial r-script
 ```
@@ -186,7 +186,7 @@ COVID.AgeC %>%
 Test Result Reporting {.tabset .tabset-fade}
 =========================================
 
-Column {data-width=650}
+Column {data-width=650}{.tabset .tabset-fade}
 -----------------------------------------------------------------------
 
 ### **Test Results by Date**
@@ -221,6 +221,25 @@ COVID.DeathDate %>%
   hc_yAxis(title = list(text = "Count (n)", style = list(fontSize = "16px", color = "white")),
            labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
   hc_xAxis(title = list(text = "Date (Death Count Per Day)", style = list(fontSize = "16px", color = "white")),
+           labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
+  hc_credits(enabled = TRUE, text = "Source: https://www.opendataphilly.org/dataset/covid-cases")
+```
+
+### **7-Day Rolling Averages**
+
+```{r COVID 7 Day Roll Avg}
+roll.wk %>%
+  arrange(ResultDate) %>%
+  drop_na() %>% 
+  hchart("area", hcaes(x = ResultDate, y = RollWindow, group = Outcome)) %>% 
+  hc_add_theme(hc_theme_db()) %>% 
+  hc_colors(colors = c("#F1431C", "#89DC6B", "#E7B53C")) %>%
+  hc_chart(zoomType = "xy") %>% 
+  hc_title(text = "COVID-19 7-Day Rolling Average") %>% 
+  hc_exporting(enabled = TRUE, filename = "COVID19_Rolling_Avg_Plot") %>% 
+  hc_yAxis(title = list(text = "Count (n)", style = list(fontSize = "16px", color = "white")),
+           labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
+  hc_xAxis(title = list(text = "Date (Avg. of Preceding 7 Days)", style = list(fontSize = "16px", color = "white")),
            labels = list(style = list(fontSize = "12px", color = "white"))) %>% 
   hc_credits(enabled = TRUE, text = "Source: https://www.opendataphilly.org/dataset/covid-cases")
 ```
