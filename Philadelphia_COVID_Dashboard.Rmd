@@ -25,7 +25,7 @@ source("Init.R") # Most used dataframes come from this initial r-script
 Overview
 =========================================
 
-Column {data-width=650}{.tabset .tabset-fade}
+Column {data-width=550}{.tabset .tabset-fade}
 -----------------------------------------------------------------------
 
 ### **COVID-19 Positive Cases by ZIP (All-Time)**
@@ -143,7 +143,7 @@ join.df %>%
 
 ```
 
-Column {data-width=350}
+Column {data-width=150}
 -----------------------------------------------------------------------
 
 ### COVID-19: Negative
@@ -170,9 +170,17 @@ valueBox(value = paste0(COVID.Outcome$Count[1], " (", percent(COVID.Outcome$Coun
 valueBox(value = COVID.Outcome$Timestamp[1], icon = "fa-clock", color = "#3fb5e3")
 ```
 
+###
+
+```{r, fig.width=10, fig.height=10}
+knitr::include_graphics("PHLLetters.JPG")
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
 ### **Demographic Breakdown**
 
-```{r COVID Demog}
+```{r COVID Gender}
 COVID.AgeC %>% 
   select(Age, Gender, Count) %>% 
   kable() %>% 
@@ -180,6 +188,18 @@ COVID.AgeC %>%
   column_spec(column = 3, bold = T, color = "#DC4015") %>%
   pack_rows("Outcome: Positive", start_row = 1, end_row = 5, label_row_css = "background-color: #666; color: #fff;") %>% 
   pack_rows("Outcome: Died", start_row = 6, end_row = 12, label_row_css = "background-color: #666; color: #fff;") %>% 
+  footnote(general = "Counts are based on all-time totals.")
+```
+
+```{r COVID Race}
+COVID.Race %>%
+  rbind(COVID.DeathRace) %>% 
+  select(Race, Count, Percentage) %>% 
+  kable() %>% 
+  kable_styling(c("striped", "condensed", "hover")) %>% 
+  column_spec(column = 3, bold = T, color = "#DC4015") %>%
+  pack_rows("Outcome: Positive", start_row = 1, end_row = 9, label_row_css = "background-color: #666; color: #fff;") %>% 
+  pack_rows("Outcome: Died", start_row = 10, end_row = 15, label_row_css = "background-color: #666; color: #fff;") %>% 
   footnote(general = "Counts are based on all-time totals.")
 ```
 
@@ -269,6 +289,12 @@ COVID.Gender %>%
   footnote(general = "Counts are based on all-time totals. Gender identification is resprentative of recorded data and not a depiction of pronoun bias.")
 ```
 
+###
+
+```{r, fig.width=10, fig.height=10}
+knitr::include_graphics("PhillyMap.jpg")
+```
+
 User Information
 =========================================
 
@@ -303,4 +329,4 @@ The true nature of scientific discovery and research lies in the acceptance that
 - **[Johns Hopkins COVID-19 Dashboard](https://coronavirus.jhu.edu/map.html)**
 - **[National Public Radio COVID-19 Tracker](https://www.npr.org/sections/health-shots/2020/03/16/816707182/map-tracking-the-spread-of-the-coronavirus-in-the-u-s)**
 - **[Children’s Hospital of Philadelphia COVID Tracker and Predictor](https://policylab.chop.edu/covid-lab-mapping-covid-19-your-community)**
-- **[Our world in Data Epidemiologic Tracking](https://ourworldindata.org/epi-curve-covid-19)*
+- **[Our world in Data Epidemiologic Tracking](https://ourworldindata.org/epi-curve-covid-19)**

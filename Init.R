@@ -6,11 +6,13 @@ COVID.Date <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_c
 COVID.ZIP <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_zip&filename=covid_cases_by_zip&format=csv&skipfields=cartodb_id")
 COVID.Age <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_age&filename=covid_cases_by_age&format=csv&skipfields=cartodb_id")
 COVID.Gender <- read_csv("https://phl.carto.com/api/v2/sql?q=SELECT+*+FROM+covid_cases_by_sex&filename=covid_cases_by_Gender&format=csv&skipfields=cartodb_id")
+COVID.Race <- read_csv("https://phl.carto.com/api/v2/sql?filename=covid_cases_by_race&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_cases_by_race")
 
 ## COVID Deaths Datasets
 COVID.DeathDate <- read_csv("https://phl.carto.com/api/v2/sql?filename=covid_deaths_by_date&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_deaths_by_date")
-COVID.DeathZip <- read.csv("https://phl.carto.com/api/v2/sql?filename=covid_deaths_by_zip&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_deaths_by_zip")
-COVID.DeathAge <- read.csv("https://phl.carto.com/api/v2/sql?filename=covid_deaths_by_age&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_deaths_by_age")
+COVID.DeathZip <- read_csv("https://phl.carto.com/api/v2/sql?filename=covid_deaths_by_zip&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_deaths_by_zip")
+COVID.DeathAge <- read_csv("https://phl.carto.com/api/v2/sql?filename=covid_deaths_by_age&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_deaths_by_age")
+COVID.DeathRace <- read_csv("https://phl.carto.com/api/v2/sql?filename=covid_deaths_by_race&format=csv&skipfields=cartodb_id,the_geom,the_geom_webmercator&q=SELECT%20*%20FROM%20covid_deaths_by_race")
 
 # COVID Outcome Data -----------------------------------------------------------
 # Data Cleaning
@@ -61,6 +63,32 @@ COVID.GenderDeath <- COVID.DeathAge %>%
 
 COVID.Gender <- rbind(COVID.Gender, COVID.GenderDeath)
 COVID.Gender <- COVID.Gender[,c(1,3,2)] # Reorder to display properly
+
+# COVID Race Breakdown ---------------------------------------------------------
+COVID.Race <- COVID.Race %>% 
+  filter(!is.na(racial_identity)) %>% 
+  mutate(
+    Percentage = round(count/sum(count),3)*100
+  )
+
+COVID.Race$racial_identity[COVID.Race$racial_identity == "HISPANIC"] <- "Hispanic"
+COVID.Race$racial_identity[COVID.Race$racial_identity == "OTHER"] <- "Other"
+COVID.Race$racial_identity[COVID.Race$racial_identity == "UNKNOWN"] <- "Unknown"
+
+colnames(COVID.Race) <- c("Race", "Count", "Timestamp", "Percentage")
+
+# COVID Race Death Breakdown ---------------------------------------------------
+COVID.DeathRace <- COVID.DeathRace %>% 
+  filter(!is.na(racial_identity)) %>% 
+  mutate(
+    Percentage = round(count/sum(count), 3)*100
+  )
+
+COVID.DeathRace$racial_identity[COVID.DeathRace$racial_identity == "UNKNOWN"] <- "Unknown"
+COVID.DeathRace$racial_identity[COVID.DeathRace$racial_identity == "AFRICAN AMERICAN"] <- "African American"
+COVID.DeathRace$racial_identity[COVID.DeathRace$racial_identity == "HISPANIC"] <- "Hispanic"
+
+colnames(COVID.DeathRace) <- c("Race", "Count", "Timestamp", "Percentage")
 
 # COVID Rolling Avg ------------------------------------------------------------
 alldates <- data.frame(ResultDate = seq(min(COVID.DateC$ResultDate, na.rm = T), max(COVID.DateC$ResultDate, na.rm = T), 1))
