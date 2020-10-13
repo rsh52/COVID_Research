@@ -41,7 +41,7 @@ df <- COVID.ZIP %>%
   select(zip_code, count)
 
 df$count <- as.integer(df$count)
-df$zip_code <- as.numeric(df$zip_code)
+df$zip_code <- as.character(df$zip_code)
 
 join.df <- geo_join(char_zips, 
                     df, 
@@ -51,14 +51,14 @@ join.df <- geo_join(char_zips,
 
 pal <- colorNumeric(
   palette = "Blues",
-  domain = join.df@data$count, na.color = "#808080")
+  domain = join.df$count, na.color = "#808080")
 
 labels <- 
   paste0(
     "Zip Code: ",
-    join.df@data$GEOID10, "<br/>",
+    join.df$GEOID10, "<br/>",
     "COVID Positive Count: ",
-    join.df@data$count) %>%
+    join.df$count) %>%
   lapply(htmltools::HTML)
 
 
@@ -98,7 +98,7 @@ df <- COVID.DeathZip %>%
   select(zip_code, count)
 
 df$count <- as.integer(df$count)
-df$zip_code <- as.numeric(df$zip_code)
+df$zip_code <- as.character(df$zip_code)
 
 join.df <- geo_join(char_zips, 
                     df, 
@@ -108,14 +108,14 @@ join.df <- geo_join(char_zips,
 
 pal <- colorNumeric(
   palette = "Reds",
-  domain = join.df@data$count, na.color = "#808080")
+  domain = join.df$count, na.color = "#808080")
 
 labels <- 
   paste0(
     "Zip Code: ",
-    join.df@data$GEOID10, "<br/>",
+    join.df$GEOID10, "<br/>",
     "COVID Death Count: ",
-    join.df@data$count) %>%
+    join.df$count) %>%
   lapply(htmltools::HTML)
 
 
@@ -177,9 +177,9 @@ COVID.AgeC %>%
   select(Age, Gender, Count) %>% 
   kable() %>% 
   kable_styling(c("striped", "condensed", "hover")) %>% 
+  column_spec(column = 3, bold = T, color = "#DC4015") %>%
   pack_rows("Outcome: Positive", start_row = 1, end_row = 5, label_row_css = "background-color: #666; color: #fff;") %>% 
   pack_rows("Outcome: Died", start_row = 6, end_row = 12, label_row_css = "background-color: #666; color: #fff;") %>% 
-  column_spec(3, bold = T, color = "#DC4015") %>% 
   footnote(general = "Counts are based on all-time totals.")
 ```
 

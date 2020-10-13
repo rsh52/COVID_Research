@@ -26,7 +26,7 @@ COVID.Outcome$Status <- paste0(COVID.Outcome$TestResult, " - ", COVID.Outcome$Ou
 # COVID Date Data --------------------------------------------------------------
 # Data Cleaning
 COVID.Date <- COVID.Date[,3:6]
-colnames(COVID.Date) <- c("ResultDate", "Outcome", "Count", "Timestamp")
+colnames(COVID.Date) <- c("ResultDate", "Count", "Outcome", "Timestamp")
 COVID.Date$Outcome[COVID.Date$Outcome == "positive"] <- "Positive"
 COVID.Date$Outcome[COVID.Date$Outcome == "negative"] <- "Negative"
 
