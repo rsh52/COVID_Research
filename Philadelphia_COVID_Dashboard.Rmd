@@ -270,7 +270,7 @@ Column {data-width=250}
 ### Approx. **Male** Mortality Rate (All-Time)
 
 ```{r COVID Mortality - Male}
-valueBox(percent(COVID.Gender$Count[5]/COVID.Gender$Count[3], .01), icon = "fa-male", color = "#e67904")
+valueBox(percent(COVID.Gender$Count[5]/COVID.Gender$Count[2], .01), icon = "fa-male", color = "#e67904")
 ```
 
 ### Approx. **Female** Mortality Rate (All-Time)
