@@ -270,13 +270,13 @@ Column {data-width=250}
 ### Approx. **Male** Mortality Rate (All-Time)
 
 ```{r COVID Mortality - Male}
-valueBox(percent(COVID.Gender$Count[5]/COVID.Gender$Count[2], .01), icon = "fa-male", color = "#e67904")
+valueBox(percent(COVID.Gender$Count[COVID.Gender$Gender == "Male" & COVID.Gender$Outcome == "Died"]/COVID.Gender$Count[COVID.Gender$Gender == "Male" & COVID.Gender$Outcome == "Positive"], .01), icon = "fa-male", color = "#e67904")
 ```
 
 ### Approx. **Female** Mortality Rate (All-Time)
 
 ```{r COVID Mortality - Female}
-valueBox(percent(COVID.Gender$Count[4]/COVID.Gender$Count[1], .01), icon = "fa-female", color = "#5f9bf3")
+valueBox(percent(COVID.Gender$Count[COVID.Gender$Gender == "Female" & COVID.Gender$Outcome == "Died"]/COVID.Gender$Count[COVID.Gender$Gender == "Female" & COVID.Gender$Outcome == "Positive"], .01), icon = "fa-female", color = "#5f9bf3")
 ```
 
 ### COVID-19 Gender Breakdown
