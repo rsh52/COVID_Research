@@ -149,19 +149,19 @@ Column {data-width=150}
 ### COVID-19: Negative
 
 ```{r COVID Outcomes - Negative}
-valueBox(COVID.Outcome$Count[2], icon = "fa-smile", color = "#3AC409")
+valueBox(COVID.Outcome$Count[COVID.Outcome$Outcome == "Negative"], icon = "fa-smile", color = "#3AC409")
 ```
 
 ### COVID-19: Positive
 
 ```{r COVID Outcomes - Positive}
-valueBox(COVID.Outcome$Count[3], icon = "fa-bug", color = "#E9C509")
+valueBox(COVID.Outcome$Count[COVID.Outcome$Outcome == "Positive"], icon = "fa-bug", color = "#E9C509")
 ```
 
 ### COVID-19: Died (w/ Approx. Mortality Rate)
 
 ```{r COVID Outcomes - Died}
-valueBox(value = paste0(COVID.Outcome$Count[1], " (", percent(COVID.Outcome$Count[1]/COVID.Outcome$Count[3], accuracy = 0.01),")"), icon = "fa-skull", color = "#DC4015")
+valueBox(value = paste0(COVID.Outcome$Count[COVID.Outcome$Outcome == "Died"], " (", percent(COVID.Outcome$Count[COVID.Outcome$Outcome == "Died"]/COVID.Outcome$Count[COVID.Outcome$Outcome == "Positive"], accuracy = 0.01),")"), icon = "fa-skull", color = "#DC4015")
 ```
 
 ### Data Query Time Stamp
