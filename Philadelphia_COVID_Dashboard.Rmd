@@ -198,8 +198,8 @@ COVID.Race %>%
   kable() %>% 
   kable_styling(c("striped", "condensed", "hover")) %>% 
   column_spec(column = 3, bold = T, color = "#DC4015") %>%
-  pack_rows("Outcome: Positive", start_row = 1, end_row = 9, label_row_css = "background-color: #666; color: #fff;") %>% 
-  pack_rows("Outcome: Died", start_row = 10, end_row = 15, label_row_css = "background-color: #666; color: #fff;") %>% 
+  pack_rows("Outcome: Positive", start_row = 1, end_row = nrow(COVID.Race), label_row_css = "background-color: #666; color: #fff;") %>% 
+  pack_rows("Outcome: Died", start_row = nrow(COVID.Race) + 1, end_row = nrow(COVID.Race) + nrow(COVID.DeathRace), label_row_css = "background-color: #666; color: #fff;") %>% 
   footnote(general = "Counts are based on all-time totals.")
 ```
 

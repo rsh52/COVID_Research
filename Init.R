@@ -71,9 +71,14 @@ COVID.Race <- COVID.Race %>%
     Percentage = round(count/sum(count),3)*100
   )
 
+COVID.Race$racial_identity[COVID.Race$racial_identity == "AMERICAN INDIAN"] <- "American Indian"
+COVID.Race$racial_identity[COVID.Race$racial_identity == "PACIFIC ISLANDER"] <- "Pacific Islander"
+COVID.Race$racial_identity[COVID.Race$racial_identity == "NATIVE AMERICAN"] <- "Native American"
+COVID.Race$racial_identity[COVID.Race$racial_identity == "BLACK"] <- "Black"
 COVID.Race$racial_identity[COVID.Race$racial_identity == "HISPANIC"] <- "Hispanic"
 COVID.Race$racial_identity[COVID.Race$racial_identity == "OTHER"] <- "Other"
 COVID.Race$racial_identity[COVID.Race$racial_identity == "UNKNOWN"] <- "Unknown"
+COVID.Race$racial_identity[COVID.Race$racial_identity == "DECLINE"] <- "Declined to Specify"
 
 colnames(COVID.Race) <- c("Race", "Count", "Timestamp", "Percentage")
 
