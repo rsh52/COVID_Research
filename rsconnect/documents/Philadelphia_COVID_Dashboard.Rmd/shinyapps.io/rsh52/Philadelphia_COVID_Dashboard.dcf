@@ -5,9 +5,9 @@ account: rsh52
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2428257
-bundleId: 4773826
+bundleId: 4975577
 url: https://rsh52.shinyapps.io/Philadelphia_COVID_Dashboard/
-when: 1625071469.09564
-lastSyncTime: 1625071469.09565
+when: 1630189017.31773
+lastSyncTime: 1630189017.31773
 asMultiple: FALSE
 asStatic: FALSE

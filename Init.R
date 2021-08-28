@@ -25,7 +25,7 @@ COVID.Outcome <- COVID.Outcome %>%
   rename(Outcome = covid_outcome,
          TestResult = test_result,
          Count = count,
-         Timestamp = etl_timestamp) %>% 
+         TimeStamp = etl_timestamp) %>% 
   mutate(
     Outcome = case_when(
       Outcome == "died" ~ "Died",
@@ -51,7 +51,7 @@ COVID.Date <- COVID.Date %>%
   rename(ResultDate = collection_date,
          Count = count,
          Outcome = test_result,
-         Timestamp = etl_timestamp) %>% 
+         TimeStamp = etl_timestamp) %>% 
   mutate(
     Outcome = case_when(
       Outcome == "positive" ~ "Positive",
@@ -68,7 +68,7 @@ COVID.DeathDate <- COVID.DeathDate %>%
   rename(ResultDate = clinical_date_of_death,
          Count = count,
          Outcome = covid_outcome,
-         Timestamp = etl_timestamp) %>% 
+         TimeStamp = etl_timestamp) %>% 
   mutate(
     Outcome = case_when(
       Outcome == "DIED" ~ "Died",
@@ -180,7 +180,7 @@ COVID.DeathRace <- COVID.DeathRace %>%
   rename(
     Race = racial_identity,
     Count = count,
-    Timestamp = etl_timestamp
+    TimeStamp = etl_timestamp
   )
 # COVID Rolling Avg ------------------------------------------------------------
 alldates <- data.frame(ResultDate = seq(min(COVID.DateC$ResultDate, na.rm = T), max(COVID.DateC$ResultDate, na.rm = T), 1))
