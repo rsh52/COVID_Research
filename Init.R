@@ -16,45 +16,123 @@ COVID.DeathRace <- read_csv("https://phl.carto.com/api/v2/sql?filename=covid_dea
 
 # COVID Outcome Data -----------------------------------------------------------
 # Data Cleaning
-COVID.Outcome <- COVID.Outcome[,3:6]
-colnames(COVID.Outcome) <- c("TestResult", "Outcome", "Count", "Timestamp")
-COVID.Outcome$Outcome[COVID.Outcome$Outcome == "died"] <- "Died"
-COVID.Outcome$Outcome[COVID.Outcome$Outcome == "positive"] <- "Positive"
-COVID.Outcome$Outcome[COVID.Outcome$Outcome == "negative"] <- "Negative"
-COVID.Outcome$TestResult[COVID.Outcome$TestResult == "positive"] <- "Positive"
-COVID.Outcome$TestResult[COVID.Outcome$TestResult == "negative"] <- "Negative"
-COVID.Outcome$Status <- paste0(COVID.Outcome$TestResult, " - ", COVID.Outcome$Outcome)
+
+COVID.Outcome <- COVID.Outcome %>% 
+  select(test_result, 
+         covid_outcome, 
+         count, 
+         etl_timestamp) %>% 
+  rename(Outcome = covid_outcome,
+         TestResult = test_result,
+         Count = count,
+         Timestamp = etl_timestamp) %>% 
+  mutate(
+    Outcome = case_when(
+      Outcome == "died" ~ "Died",
+      Outcome == "positive" ~ "Positive",
+      Outcome == "negative" ~ "Negative",
+      TRUE ~ NA_character_),
+    TestResult = case_when(
+      TestResult == "positive" ~ "Positive",
+      TestResult == "negative" ~ "Negative",
+      TRUE ~ NA_character_
+    ),
+    Status = paste(TestResult, " - ", Outcome)
+  )
 
 # COVID Date Data --------------------------------------------------------------
 # Data Cleaning
-COVID.Date <- COVID.Date[,3:6]
-colnames(COVID.Date) <- c("ResultDate", "Count", "Outcome", "Timestamp")
-COVID.Date$Outcome[COVID.Date$Outcome == "positive"] <- "Positive"
-COVID.Date$Outcome[COVID.Date$Outcome == "negative"] <- "Negative"
 
-colnames(COVID.DeathDate) <- c("ResultDate", "Outcome", "Count", "Timestamp")
-COVID.DeathDate$Outcome[COVID.DeathDate$Outcome == "DIED"] <- "Died"
+COVID.Date <- COVID.Date %>% 
+  select(collection_date,
+         count,
+         test_result,
+         etl_timestamp) %>% 
+  rename(ResultDate = collection_date,
+         Count = count,
+         Outcome = test_result,
+         Timestamp = etl_timestamp) %>% 
+  mutate(
+    Outcome = case_when(
+      Outcome == "positive" ~ "Positive",
+      Outcome == "negative" ~ "Negative",
+      TRUE ~ NA_character_
+    )
+  )
+
+COVID.DeathDate <- COVID.DeathDate %>% 
+  select(clinical_date_of_death,
+         count,
+         covid_outcome,
+         etl_timestamp) %>% 
+  rename(ResultDate = clinical_date_of_death,
+         Count = count,
+         Outcome = covid_outcome,
+         Timestamp = etl_timestamp) %>% 
+  mutate(
+    Outcome = case_when(
+      Outcome == "DIED" ~ "Died",
+      TRUE ~ NA_character_
+    )
+  )
 
 COVID.DateC <- rbind(COVID.Date, COVID.DeathDate)
 
 # COVID Age --------------------------------------------------------------------
-COVID.Age <- COVID.Age[,3:5]
-colnames(COVID.Age) <- c("Age", "Count", "TimeStamp")
-COVID.Age$Gender <- "All"
-COVID.Age$Outcome <- "Positive"
+COVID.Age <- COVID.Age %>% 
+  select(
+    age,
+    count, 
+    etl_timestamp
+  ) %>% 
+  rename(
+    Age = age,
+    Count = count,
+    TimeStamp = etl_timestamp
+  ) %>% 
+  mutate(
+    Gender = "All",
+    Outcome = "Positive"
+  )
 
-colnames(COVID.DeathAge) <- c("Gender", "Age", "Count", "TimeStamp")
-COVID.DeathAge$Outcome <- "Died"
+COVID.DeathAge <- COVID.DeathAge %>% 
+  select(
+    age,
+    count,
+    etl_timestamp,
+    gender
+  ) %>% 
+  rename(
+    Gender = gender,
+    Age = age,
+    Count = count,
+    TimeStamp = etl_timestamp
+  ) %>% 
+  mutate(
+    Outcome = "Died"
+  )
 
 COVID.AgeC <- rbind(COVID.Age, COVID.DeathAge)
 
 # COVID Gender Breakdown -------------------------------------------------------
-COVID.Gender <- COVID.Gender[,3:5]
-colnames(COVID.Gender) <- c("Gender", "Count", "TimeStamp")
 COVID.Gender <- COVID.Gender %>% 
-  # filter(Gender != "UNKNOWN") %>% # Removed only for simplicity
-  select(Gender, Count) %>% 
-  mutate(Outcome = "Positive")
+  select(
+    sex,
+    count,
+    etl_timestamp
+  ) %>% 
+  rename(
+    Gender = sex,
+    Count = count,
+    TimeStamp = etl_timestamp
+  ) %>% 
+  transmute(
+    Gender = case_when(
+      Gender == "UNKNOWN"~ "Unknown",
+      TRUE ~ Gender),
+    Count,
+    Outcome = "Positive"
+  )
 
 COVID.GenderDeath <- COVID.DeathAge %>% 
   group_by(Gender) %>% 
@@ -68,33 +146,42 @@ COVID.Gender <- COVID.Gender[,c(1,3,2)] # Reorder to display properly
 COVID.Race <- COVID.Race %>% 
   filter(!is.na(racial_identity)) %>% 
   mutate(
-    Percentage = round(count/sum(count),3)*100
+    Percentage = round(count/sum(count),3)*100,
+    racial_identity = case_when(
+      racial_identity == "AMERICAN INDIAN" ~ "American Indian",
+      racial_identity == "PACIFIC ISLANDER" ~ "Pacific Islander",
+      racial_identity == "NATIVE AMERICAN" ~ "Native American",
+      racial_identity == "BLACK" ~ "Black",
+      racial_identity == "HISPANIC" ~ "Hispanic",
+      racial_identity == "OTHER" ~ "Other",
+      racial_identity == "UNKNOWN" ~ "Unknown",
+      racial_identity == "DECLINE" ~ "Declined to Specify",
+      TRUE ~ racial_identity
+    )
+  ) %>% 
+  rename(
+    Race = racial_identity,
+    Count = count,
+    TimeStamp = etl_timestamp
   )
-
-COVID.Race$racial_identity[COVID.Race$racial_identity == "AMERICAN INDIAN"] <- "American Indian"
-COVID.Race$racial_identity[COVID.Race$racial_identity == "PACIFIC ISLANDER"] <- "Pacific Islander"
-COVID.Race$racial_identity[COVID.Race$racial_identity == "NATIVE AMERICAN"] <- "Native American"
-COVID.Race$racial_identity[COVID.Race$racial_identity == "BLACK"] <- "Black"
-COVID.Race$racial_identity[COVID.Race$racial_identity == "HISPANIC"] <- "Hispanic"
-COVID.Race$racial_identity[COVID.Race$racial_identity == "OTHER"] <- "Other"
-COVID.Race$racial_identity[COVID.Race$racial_identity == "UNKNOWN"] <- "Unknown"
-COVID.Race$racial_identity[COVID.Race$racial_identity == "DECLINE"] <- "Declined to Specify"
-
-colnames(COVID.Race) <- c("Race", "Count", "Timestamp", "Percentage")
 
 # COVID Race Death Breakdown ---------------------------------------------------
 COVID.DeathRace <- COVID.DeathRace %>% 
   filter(!is.na(racial_identity)) %>% 
   mutate(
-    Percentage = round(count/sum(count), 3)*100
+    Percentage = round(count/sum(count), 3)*100,
+    racial_identity = case_when(
+      racial_identity == "UNKNOWN" ~ "Unknown",
+      racial_identity == "AFRICAN AMERICAN" ~ "African American",
+      racial_identity == "HISPANIC" ~ "Hispanic",
+      TRUE ~ racial_identity
+    )
+  ) %>% 
+  rename(
+    Race = racial_identity,
+    Count = count,
+    Timestamp = etl_timestamp
   )
-
-COVID.DeathRace$racial_identity[COVID.DeathRace$racial_identity == "UNKNOWN"] <- "Unknown"
-COVID.DeathRace$racial_identity[COVID.DeathRace$racial_identity == "AFRICAN AMERICAN"] <- "African American"
-COVID.DeathRace$racial_identity[COVID.DeathRace$racial_identity == "HISPANIC"] <- "Hispanic"
-
-colnames(COVID.DeathRace) <- c("Race", "Count", "Timestamp", "Percentage")
-
 # COVID Rolling Avg ------------------------------------------------------------
 alldates <- data.frame(ResultDate = seq(min(COVID.DateC$ResultDate, na.rm = T), max(COVID.DateC$ResultDate, na.rm = T), 1))
 
